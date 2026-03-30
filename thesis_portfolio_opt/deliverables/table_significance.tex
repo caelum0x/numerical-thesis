@@ -1,0 +1,58 @@
+\begin{table}[htbp]
+\centering
+\caption{Statistical Significance Tests}
+\label{tab:significance}
+\small
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{5}{l}{\textbf{Panel A: Block Bootstrap Sharpe Ratio 95\% Confidence Intervals}} \\
+\midrule
+Strategy & Sharpe (point) & 95\% CI Lower & 95\% CI Upper & N \\
+\midrule
+ML-Enhanced (lam=5) & 2.1672 & 1.7429 & 2.6331 & 4275 \\
+ML-Enhanced (lam=2) & 2.0710 & 1.6793 & 2.5056 & 4275 \\
+A1 LGBM maxW50 tc5 & 0.8324 & -0.3915 & 2.0984 & 730 \\
+SPY & 0.6120 & 0.2288 & 1.0566 & 5031 \\
+A2 LGBM lam3 maxW50 & 0.8079 & -0.4062 & 2.0703 & 730 \\
+A3 LGBM shrink10 & 0.7960 & -0.4266 & 2.0626 & 730 \\
+Walk-Forward & 0.4741 & -0.5819 & 1.6166 & 730 \\
+Equal Weight & 0.5088 & -0.0101 & 1.0991 & 4275 \\
+60/40 & 0.7579 & 0.2922 & 1.3173 & 4275 \\
+\bottomrule
+\end{tabular}
+\\[12pt]
+\begin{tabular}{lccccc}
+\toprule
+\multicolumn{6}{l}{\textbf{Panel B: Ledoit--Wolf (2008) Test for Equality of Sharpe Ratios}} \\
+\midrule
+Comparison & SR$_A$ & SR$_B$ & $z$-stat & $p$-value & \\
+\midrule
+ML-Enhanced (lam=5) vs SPY & 2.1672 & 0.6160 & 7.2501 & 0.0000*** \\
+ML-Enhanced (lam=5) vs Equal Weight & 2.1672 & 0.5088 & 7.1805 & 0.0000*** \\
+ML-Enhanced (lam=5) vs 60/40 & 2.1672 & 0.7579 & 6.7211 & 0.0000*** \\
+A1 LGBM maxW50 tc5 vs SPY & 0.8324 & 0.6712 & 0.2643 & 0.7916 \\
+A2 LGBM lam3 maxW50 vs SPY & 0.8079 & 0.6712 & 0.2263 & 0.8209 \\
+Walk-Forward vs SPY & 0.4741 & 0.6712 & -0.3683 & 0.7127 \\
+\bottomrule
+\end{tabular}
+\\[12pt]
+\begin{tabular}{lccc}
+\toprule
+\multicolumn{4}{l}{\textbf{Panel C: Diebold--Mariano Test}} \\
+\midrule
+Comparison & DM stat & $p$-value & \\
+\midrule
+ML-Enhanced (lam=5) vs SPY & -3.8610 & 0.0001*** \\
+ML-Enhanced (lam=5) vs Equal Weight & 6.6092 & 0.0000*** \\
+ML-Enhanced (lam=5) vs 60/40 & 5.6884 & 0.0000*** \\
+A1 LGBM maxW50 tc5 vs SPY & -4.8266 & 0.0000*** \\
+A2 LGBM lam3 maxW50 vs SPY & -4.7833 & 0.0000*** \\
+Walk-Forward vs SPY & -4.4914 & 0.0000*** \\
+\bottomrule
+\end{tabular}
+\\[6pt]
+\begin{minipage}{0.9\textwidth}
+\footnotesize
+\textit{Notes:} $^{***}p<0.01$, $^{**}p<0.05$, $^{*}p<0.10$. Panel~A reports block-bootstrap (block size = 21 trading days) 95\% confidence intervals for annualised Sharpe ratios (10,000 replications). Panel~B reports the Ledoit--Wolf (2008) HAC-based test for the null hypothesis that two Sharpe ratios are equal, using Newey--West standard errors with Bartlett kernel. Panel~C reports the Diebold--Mariano (1995) test comparing squared return losses under the null of equal predictive accuracy, with HAC standard errors.
+\end{minipage}
+\end{table}

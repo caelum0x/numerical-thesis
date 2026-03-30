@@ -1,0 +1,18 @@
+\begin{table}
+\caption{Predictive Model Comparison (In-Sample CV)}
+\label{tab:model_comparison}
+\begin{tabular}{lrrrr}
+\toprule
+ & RMSE & R² & IC & Dir. Acc. \\
+model &  &  &  &  \\
+\midrule
+\textbf{elastic_net} & 0.0537 & -3.0725 & 0.4688 & 0.5910 \\
+\textbf{lasso} & 0.0485 & -2.2392 & 0.4540 & 0.6058 \\
+\textbf{gradient_boosting} & 0.0553 & -3.7088 & 0.3745 & 0.4730 \\
+\textbf{ridge} & 0.0667 & -6.3588 & 0.3554 & 0.5807 \\
+\textbf{xgboost} & 0.0534 & -3.3306 & 0.3525 & 0.4643 \\
+\textbf{lightgbm} & 0.0615 & -4.8953 & 0.3222 & 0.4561 \\
+\textbf{random_forest} & 0.0569 & -3.9184 & 0.2662 & 0.4923 \\
+\bottomrule
+\end{tabular}
+\end{table}

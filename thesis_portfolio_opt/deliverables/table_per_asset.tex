@@ -1,0 +1,22 @@
+\begin{table}
+\caption{Best Model Performance by Asset (In-Sample CV)}
+\label{tab:per_asset}
+\begin{tabular}{llrrr}
+\toprule
+Ticker & Best Model & RMSE & IC & Dir. Acc. \\
+\midrule
+AGG & random_forest & 0.0148 & -0.0181 & 0.3968 \\
+DBC & lasso & 0.0483 & 0.5547 & 0.5778 \\
+EEM & ridge & 0.0759 & 0.4650 & 0.5873 \\
+EFA & lasso & 0.0471 & 0.5236 & 0.5873 \\
+GLD & xgboost & 0.0527 & 0.4451 & 0.5714 \\
+HYG & lasso & 0.0212 & 0.5980 & 0.7587 \\
+IWM & lasso & 0.0773 & 0.5571 & 0.5873 \\
+LQD & random_forest & 0.0158 & -0.0701 & 0.5937 \\
+SPY & lasso & 0.0496 & 0.5937 & 0.5937 \\
+TIP & lasso & 0.0194 & 0.4144 & 0.6762 \\
+TLT & elastic_net & 0.0458 & 0.4008 & 0.5619 \\
+VNQ & random_forest & 0.0518 & 0.1462 & 0.6508 \\
+\bottomrule
+\end{tabular}
+\end{table}

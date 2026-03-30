@@ -1,0 +1,57 @@
+
+================================================================================
+THESIS RESULTS SUMMARY
+Macroeconomic Factor-Based Dynamic Portfolio Optimization
+================================================================================
+
+DATA:
+  - 12 ETFs spanning equities, bonds, alternatives (2005-2024)
+  - 18 FRED macroeconomic indicators
+  - 212 engineered features (returns, vol, momentum, RSI, macro lags)
+  - Strict temporal split: train ≤ 2021, test 2022-2024
+
+MODELS TESTED:
+  - 7 model types: Ridge, Lasso, ElasticNet, Random Forest, GBR, XGBoost, LightGBM
+  - 84 model fits (7 models × 12 assets)
+  - Time-series cross-validation (expanding window, 5 folds)
+  - Walk-forward retraining (quarterly, 12 retrains)
+
+KEY FINDINGS:
+
+  1. PREDICTIVE POWER (OOS 2022-2024):
+     - Best IC: +0.188 (Ridge) — macro factors have real forecasting power
+     - Best directional accuracy: 50.9% (Ridge)
+     - Gold and bonds most predictable (IC +0.24 to +0.37)
+     - SPY hardest to predict (IC near zero) — supports EMH for large-cap
+
+  2. PORTFOLIO PERFORMANCE:
+     - Best fixed-split: Sharpe 0.803 (LightGBM macro, maxW=0.5) — beats SPY
+     - Walk-forward (realistic): Sharpe 0.474 — beats Equal Weight and 60/40
+     - Multi-agent swarm: Sharpe 0.313 — lower but adds risk insights
+     - 22 strategies tested via autonomous experimentation
+
+  3. METHODOLOGICAL CONTRIBUTIONS:
+     - AutoResearch pattern (Karpathy): 12 batch experiments in 70 seconds
+     - MiroFish adaptation: 9-agent swarm with agreement-based risk overlay
+     - Walk-forward validation shows ~40% Sharpe degradation from fixed split
+     - This gap quantifies overfitting in financial ML
+
+  4. KEY THESIS ARGUMENTS:
+     - Macro factors contain predictive information for safe-haven assets
+     - Linear regularized models generalize better than tree models OOS
+     - Multi-agent ensemble adds uncertainty quantification, not alpha
+     - Walk-forward is essential — fixed splits overstate performance
+     - LightGBM + macro-only features = best risk-adjusted strategy
+
+ARTIFACTS:
+  - 20 publication-quality figures (PDF, 300 DPI)
+  - 6 LaTeX tables
+  - 24 trained models
+  - 22+ CSV data files
+  - ~20,000 lines of research code across 3 repos
+
+REPOS:
+  - thesis_portfolio_opt/  — core research (16,443 lines)
+  - autoresearch/          — autonomous experiment engine (1,716 lines)
+  - MiroFish/              — multi-agent market simulator (1,881 lines)
+================================================================================

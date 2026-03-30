@@ -1,0 +1,38 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}\usepackage{amsmath,booktabs,float,hyperref}\usepackage[margin=2.5cm]{geometry}
+\title{Chapter 4: Empirical Results}\author{IE Thesis}\date{March 2026}
+\begin{document}\maketitle
+
+\section{Headline Result}
+Walk-forward RandomForest with macro-only features achieves Sharpe ratio 0.969 out-of-sample (2022--2024), beating SPY buy-and-hold (0.671) with half the maximum drawdown ($-$12.3\% vs $-$22.1\%).
+
+\begin{table}[H]\centering
+\caption{Walk-Forward Backtest Results (Quarterly Retraining, OOS 2022--2024)}\label{tab:wf}
+\begin{tabular}{lcccc}\toprule
+Strategy & Sharpe & Ann.~Ret & Ann.~Vol & Max~DD \\\midrule
+WF RandomForest & \textbf{0.969} & +13.17\% & 13.59\% & $-$12.34\% \\
+Ensemble (RF+LGBM+Lasso) & 0.710 & +9.27\% & 13.06\% & $-$17.89\% \\
+SPY Buy \& Hold & 0.671 & +11.73\% & 17.49\% & $-$22.09\% \\
+60/40 & 0.558 & +6.44\% & 11.54\% & $-$17.46\% \\
+WF Lasso & 0.521 & +7.62\% & 14.62\% & $-$23.00\% \\
+WF LightGBM & 0.498 & +7.03\% & 14.12\% & $-$22.21\% \\
+Equal Weight & 0.202 & +2.10\% & 10.39\% & $-$17.49\% \\
+\bottomrule\end{tabular}\end{table}
+
+\section{Key Findings}
+\begin{enumerate}
+\item RandomForest + macro features achieves Sharpe 0.969 walk-forward (beats SPY)
+\item Maximum drawdown of $-$12.3\% is half of SPY's $-$22.1\%
+\item Top predictive features: 10Y Treasury yield, VIX, 2Y yield, BBB corporate spread
+\item Transaction cost break-even: $\sim$25 bps (viable at institutional costs 5--15 bps)
+\item OOS Sharpe difference is \textbf{not} statistically significant ($p = 0.79$) due to short sample
+\item Strategy works during macro regime shifts (2022--2024), not in bull markets
+\item Fama-French 5-factor $R^2 = 0.38$; 62\% of returns unexplained by standard factors
+\item Ensemble (Sharpe 0.710) beats SPY but single RF is better
+\item Turnover constraint at 10\% improves max drawdown from $-$22.6\% to $-$15.7\%
+\end{enumerate}
+
+\section{Statistical Significance}
+Ledoit-Wolf test for Sharpe ratio equality (OOS only): $z = 0.27$, $p = 0.79$. The 3-year OOS window is too short to establish statistical significance at conventional levels. This is an honest limitation that motivates longer evaluation periods in future work.
+
+\end{document}

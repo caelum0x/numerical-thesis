@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\centering
+\caption{Turnover-Constrained Optimization --- LightGBM Macro Strategy (OOS 2022--2024)}
+\label{tab:turnover_constraint}
+\begin{tabular}{lrrrrrr}
+\toprule
+Constraint & Sharpe & Ann.\ Return & Ann.\ Vol & Max DD & Avg Turnover & Total TC \\
+\midrule
+None & 0.763 & 10.45% & 13.70% & -22.63% & 0.680 & 0.0245 \\
+30% & 0.597 & 7.79% & 13.03% & -18.73% & 0.256 & 0.0092 \\
+20% & 0.500 & 6.33% & 12.66% & -19.15% & 0.180 & 0.0065 \\
+10% & 0.441 & 5.07% & 11.49% & -15.74% & 0.098 & 0.0035 \\
+5% & 0.305 & 3.21% & 10.53% & -16.28% & 0.050 & 0.0018 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Turnover constraint: $\|w_{\text{new}} - w_{\text{old}}\|_1 \le \tau$. TC = 10 bps per unit turnover. Monthly rebalancing.
+\end{tablenotes}
+\end{table}

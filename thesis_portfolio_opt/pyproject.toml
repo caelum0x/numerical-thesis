@@ -1,0 +1,27 @@
+[project]
+name = "thesis-portfolio-opt"
+version = "1.0.0"
+description = "Macroeconomic Factor-Based Dynamic Portfolio Optimization"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "slow: marks tests that require data or take a long time",
+    "unit: marks pure unit tests with no external dependencies",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["venv", ".venv", "__pycache__", ".git"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]

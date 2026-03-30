@@ -1,0 +1,85 @@
+
+======================================================================
+  MIROFISH FINANCIAL SIMULATION -- FULL REPORT
+  Generated: 2026-03-28 02:39:44
+======================================================================
+
+======================================================================
+  SIMULATION SUMMARY
+======================================================================
+
+  Period:        2022-02-02 to 2024-12-05
+  Total rounds:  35
+  Active agents: 14
+
+  Agent Types:
+    adaptive       : 1
+    contrarian     : 2
+    macro          : 1
+    ml_ensemble    : 1
+    ml_linear      : 2
+    momentum       : 3
+    noise          : 2
+    regime         : 1
+    volatility     : 1
+
+  Agreement Statistics:
+    Mean:   0.2475
+    Std:    0.0690
+    Min:    0.1059
+    Max:    0.4422
+    Median: 0.2444
+
+======================================================================
+  PER-AGENT PERFORMANCE ATTRIBUTION
+======================================================================
+
+  No track record data available. Run simulation with 
+  track record updates to see per-agent attribution.
+
+======================================================================
+  REGIME ANALYSIS
+======================================================================
+
+  RegimeTrader Regime Distribution:
+    balanced    :   14 periods (40.0%)
+    defensive   :   12 periods (34.3%)
+    risk_on     :    9 periods (25.7%)
+
+  VIX Statistics by Regime:
+    balanced    : mean VIX=19.0, range=[14.0, 24.8]
+    defensive   : mean VIX=23.9, range=[15.8, 32.0]
+    risk_on     : mean VIX=13.4, range=[12.5, 14.9]
+
+======================================================================
+  AGREEMENT-RETURN RELATIONSHIP
+======================================================================
+
+  Correlation (agreement vs returns): +0.0793
+
+  Returns by Agreement Tercile:
+    Low  agreement (<=0.219): mean ret=0.0009, n=12
+    Mid  agreement:                 mean ret=0.0053, n=11
+    High agreement (>=0.259): mean ret=0.0024, n=12
+
+  Risk Overlay Statistics:
+    Mean scale factor: 0.843
+    Min scale factor:  0.515
+    Periods at full allocation: 7/35
+
+======================================================================
+  KEY FINDINGS AND RECOMMENDATIONS
+======================================================================
+
+  [-] Ensemble underperformed SPY on risk-adjusted basis (Sharpe: 0.313 vs 0.730)
+  [+] Lower max drawdown than SPY (-16.71% vs -17.24%)
+
+  Recommendations:
+    1. Monitor agreement level as a real-time risk indicator
+    2. Consider regime-conditional agent weighting
+    3. Use agreement-based risk overlay to manage drawdowns
+    4. Regularly retrain ML models on expanding window
+
+======================================================================
+  END OF REPORT
+======================================================================

@@ -1,0 +1,57 @@
+B1_lasso_macro	-0.1067	0.0094	0.4692	discard	Lasso macro-only λ=5
+B2_lgbm_macro	0.4657	0.0378	0.4886	discard	LightGBM macro-only λ=5
+B3_ensemble_macro	0.0109	0.1110	0.4960	discard	Ensemble(Lasso+LGBM+Ridge) macro λ=5
+B4_ensemble_shrink30	0.0146	0.1110	0.4960	discard	Ensemble macro λ=5 shrink=0.3
+B5_lgbm_all_feat	-0.0252	0.0079	0.4634	discard	LightGBM all features λ=5
+B6_lgbm_macro_lam10	0.3407	0.0378	0.4886	discard	LightGBM macro λ=10 (conservative)
+B7_lgbm_macro_weekly	-0.0516	0.0378	0.4886	discard	LightGBM macro λ=5 weekly rebal
+B8_lgbm_macro_quarterly	0.0739	0.0378	0.4886	discard	LightGBM macro λ=5 quarterly rebal
+B9_xgb_macro	0.2250	-0.0045	0.4689	discard	XGBoost macro-only λ=5
+B10_lgbm_pca20	0.0000	0.0000	0.0000	discard	CRASH: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- AGG_mom_126d
+- AGG_mom_21d
+- AGG_mom_252d
+- AGG_mom_63d
+- AGG_rsi_14
+- ...
+Feature names seen at fit time, yet now missing:
+- PC0
+- PC1
+- PC10
+- PC11
+- PC12
+- ...
+
+B11_lgbm_macro_tc5	0.4903	0.0378	0.4886	discard	LightGBM macro λ=5 tc=5bps
+B12_lgbm_macro_maxw50	0.8025	0.0378	0.4886	keep	LightGBM macro λ=5 maxW=0.5
+C1_elastic_macro	-0.0358	0.1588	0.4916	discard	ElasticNet macro λ=5 maxW=0.5
+C2_elastic_macro_l1_80	0.0078	0.1816	0.4946	discard	ElasticNet l1=0.8 macro λ=5 maxW=0.5
+C3_svr_macro	0.8682	0.2000	0.5097	discard	SVR macro λ=5 maxW=0.5
+C4_lgbm_lam2_maxw50	0.7926	0.0378	0.4886	discard	LGBM λ=2 maxW=0.5 (aggressive, swarm-safe)
+C5_lgbm_maxw30_shrink20	0.3841	0.0378	0.4886	discard	LGBM maxW=0.3 shrink=0.2 (tight)
+C6_lgbm_n500_lr02	0.6140	0.0361	0.4917	discard	LGBM n=500 lr=0.02 macro maxW=0.5
+C7_lgbm_d3_n300	0.4174	0.0744	0.4860	discard	LGBM depth=3 n=300 macro maxW=0.5
+C8_lgbm_leaves63	0.7260	0.0370	0.4935	discard	LGBM leaves=63 macro maxW=0.5
+C9_lgbm_bag60	0.2939	0.0370	0.4782	discard	LGBM subsample=0.6 macro maxW=0.5
+C10_lgbm_n150_lr10	0.2299	0.0429	0.4741	discard	LGBM n=150 lr=0.1 macro maxW=0.5
+C11_lgbm_macro_mom	-0.0510	0.0114	0.4611	discard	LGBM macro+momentum λ=5 maxW=0.5
+C12_lgbm_pca20_fixed	-0.2210	0.1058	0.5024	discard	LGBM all→PCA(20) λ=5 maxW=0.5 [PCA bug fixed]
+C13_lgbm_pca10	0.0197	0.0647	0.5078	discard	LGBM all→PCA(10) λ=5 maxW=0.5
+C14_lgbm_featsel30	-0.0033	0.0662	0.5299	discard	LGBM top-30 MI features λ=5 maxW=0.5
+C15_lgbm_momentum	0.2282	0.1320	0.5288	discard	LGBM momentum+vol features λ=5 maxW=0.5
+C16_lgbm_technical	0.2282	0.1320	0.5288	discard	LGBM technical indicators λ=5 maxW=0.5
+C17_ens_lgbm_ridge	0.5309	0.1115	0.5056	discard	Ensemble LGBM+Ridge macro λ=5 maxW=0.5
+C18_ens_lgbm_xgb	0.6004	0.0215	0.4848	discard	Ensemble LGBM+XGB macro λ=5 maxW=0.5
+C19_ens_triple	0.0038	0.1325	0.4973	discard	Ensemble LGBM+Ridge+Elastic macro λ=5 maxW=0.5
+C20_ens_lgbm_ridge_shrink	0.5254	0.1115	0.5056	discard	Ensemble LGBM+Ridge shrink=0.15 maxW=0.5
+C21_lgbm_maxw40	0.6067	0.0378	0.4886	discard	LGBM macro λ=5 maxW=0.4
+C22_lgbm_maxw60	0.8973	0.0378	0.4886	keep	LGBM macro λ=5 maxW=0.6
+C23_lgbm_shrink10_maxw50	0.7960	0.0378	0.4886	discard	LGBM macro shrink=0.1 maxW=0.5
+C24_lgbm_shrink30_maxw50	0.7894	0.0378	0.4886	discard	LGBM macro shrink=0.3 maxW=0.5
+C25_lgbm_lam3_maxw50_tc5	0.8378	0.0378	0.4886	discard	LGBM λ=3 maxW=0.5 tc=5bps
+C26_lgbm_lam7_maxw50	0.7920	0.0378	0.4886	discard	LGBM λ=7 maxW=0.5
+C27_rf_n200_d8	0.5881	0.0458	0.4812	discard	RF n=200 depth=8 macro maxW=0.5
+C28_gbr_n200	0.2687	0.0177	0.4787	discard	GBR n=200 macro maxW=0.5
+C29_adaboost	0.2857	-0.1314	0.4381	discard	AdaBoost macro maxW=0.5
+C30_lgbm_maxw50_tc3	0.8443	0.0378	0.4886	discard	LGBM macro maxW=0.5 tc=3bps (best case)

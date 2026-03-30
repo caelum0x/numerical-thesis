@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-03-30T21:02:10.442578",
-  "iteration": 5,
+  "generated_at": "2026-03-30T20:56:09.599780",
+  "iteration": 4,
   "winning_strategy": {
     "name": "ML_Only",
-    "sharpe": 1.41,
-    "beats_spy_by": 0.8396
+    "sharpe": 1.3303,
+    "beats_spy_by": 0.7599
   },
   "swarm_impact": {
-    "sharpe_delta": -0.5004,
-    "drawdown_improvement": 0.0157,
-    "volatility_reduction": -0.0286,
+    "sharpe_delta": -0.4701,
+    "drawdown_improvement": 0.0158,
+    "volatility_reduction": -0.0289,
     "verdict": "beneficial_risk"
   },
   "gaps": {
@@ -29,10 +29,19 @@
     },
     {
       "name": "push_sharpe_tight_constraints",
-      "rationale": "Current best Sharpe=1.410 \u2014 try tighter turnover/weight constraints",
+      "rationale": "Current best Sharpe=1.330 \u2014 try tighter turnover/weight constraints",
       "params": {
         "max_weight": 0.3,
         "shrinkage": 0.2
+      }
+    },
+    {
+      "name": "regime_conditional_model",
+      "rationale": "No regime-conditional experiments found \u2014 VIX-based model switching",
+      "params": {
+        "model_type": "lgbm",
+        "feature_set": "macro",
+        "regime": true
       }
     },
     {

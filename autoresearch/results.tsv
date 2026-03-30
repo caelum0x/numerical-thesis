@@ -55,3 +55,18 @@ C27_rf_n200_d8	0.5881	0.0458	0.4812	discard	RF n=200 depth=8 macro maxW=0.5
 C28_gbr_n200	0.2687	0.0177	0.4787	discard	GBR n=200 macro maxW=0.5
 C29_adaboost	0.2857	-0.1314	0.4381	discard	AdaBoost macro maxW=0.5
 C30_lgbm_maxw50_tc3	0.8443	0.0378	0.4886	discard	LGBM macro maxW=0.5 tc=3bps (best case)
+D1_regime_lgbm_maxw50	0.3053	-0.0074	0.4946	discard	Regime-conditional LGBM (VIX=20 split) macro maxW=0.5
+D2_regime_lgbm_maxw60	0.3124	-0.0074	0.4946	discard	Regime-conditional LGBM (VIX=20 split) macro maxW=0.6
+D3_regime_lgbm_vix25	0.4131	0.0156	0.4794	discard	Regime-conditional LGBM (VIX=25 split) macro maxW=0.6
+D4_regime_lgbm_lam3	0.2583	-0.0074	0.4946	discard	Regime-conditional LGBM (VIX=20) λ=3 maxW=0.6
+D5_icens_maxw50	0.5169	0.0941	0.5082	discard	IC-weighted ensemble (LGBM+SVR+Ridge) macro maxW=0.5
+D6_icens_maxw60	0.6561	0.0941	0.5082	discard	IC-weighted ensemble (LGBM+SVR+Ridge) macro maxW=0.6
+D7_icens_lam3_maxw60	0.6171	0.0941	0.5082	discard	IC-weighted ensemble λ=3 maxW=0.6
+D8_svr_maxw60	0.9033	0.2000	0.5097	discard	SVR macro λ=5 maxW=0.6
+D9_lgbm_maxw65	0.9122	0.0378	0.4886	discard	LGBM macro λ=5 maxW=0.65
+D10_lgbm_maxw70	0.9249	0.0378	0.4886	discard	LGBM macro λ=5 maxW=0.7
+D11_lgbm_maxw60_shrink10	0.8961	0.0378	0.4886	discard	LGBM macro λ=5 maxW=0.6 shrink=0.1
+D12_lgbm_maxw60_lam3	0.8650	0.0378	0.4886	discard	LGBM macro λ=3 maxW=0.6
+D13_lgbm_maxw60_tc3	0.9375	0.0378	0.4886	keep	LGBM macro λ=5 maxW=0.6 tc=3bps
+D14_xgb_maxw60	0.5619	-0.0266	0.4820	discard	XGBoost macro λ=5 maxW=0.6
+D15_lgbm_maxw60_weekly	0.3854	0.0378	0.4886	discard	LGBM macro λ=5 maxW=0.6 weekly rebalance

@@ -77,22 +77,35 @@
  INTEGRATED RESULTS (OOS 2022-2024)
  ═══════════════════════════════════
 
+  At tc=3bps (best case):
   ┌───────────────┬─────────┬──────────┬──────────┬──────────┐
   │ Strategy      │ Sharpe  │  Return  │  MaxDD   │   Vol    │
   ├───────────────┼─────────┼──────────┼──────────┼──────────┤
-  │ ML-only     ★ │  1.294  │  +18.4%  │  -18.8%  │  14.2%   │
-  │ ML+Swarm      │  0.828  │   +9.7%  │  -17.2%  │  11.7%   │
+  │ ML-only     ★ │  1.410  │  +20.7%  │  -17.8%  │  14.7%   │
+  │ ML+Swarm      │  0.910  │  +10.7%  │  -16.2%  │  11.8%   │
   │ SPY           │  0.570  │  +10.0%  │  -24.5%  │  17.5%   │
-  │ Swarm-only    │  0.301  │   +3.1%  │  -19.4%  │  10.4%   │
+  │ Swarm-only    │  0.325  │   +3.4%  │  -19.2%  │  10.4%   │
   │ Equal Weight  │  0.129  │   +1.3%  │  -18.9%  │  10.4%   │
   └───────────────┴─────────┴──────────┴──────────┴──────────┘
 
+  At tc=10bps (realistic):
+  ┌───────────────┬─────────┬──────────┬──────────┬──────────┐
+  │ Strategy      │ Sharpe  │  Return  │  MaxDD   │   Vol    │
+  ├───────────────┼─────────┼──────────┼──────────┼──────────┤
+  │ ML-only     ★ │  1.330  │  +19.6%  │  -18.1%  │  14.7%   │
+  │ ML+Swarm      │  0.860  │  +10.2%  │  -16.6%  │  11.8%   │
+  │ SPY           │  0.570  │  +10.0%  │  -24.5%  │  17.5%   │
+  └───────────────┴─────────┴──────────┴──────────┴──────────┘
+
   Key findings:
-  - ML-only (AutoResearch best config) dominates: Sharpe 1.294, 2.3x SPY
-  - ML+Swarm trades Sharpe for safety: -1.6% better drawdown, -2.6% less vol
+  - ML-only dominates at both TC levels: Sharpe 1.330 (tc=10) / 1.410 (tc=3)
+  - ML+Swarm trades Sharpe for safety: -1.5% better drawdown, -2.9% less vol
   - MiroFish swarm verdict: "beneficial_risk" — reduces drawdown at cost of return
-  - Feedback loop identified 6 next experiments: elastic, SVR, regime-conditional,
-    IC-weighted ensemble, lower λ with swarm, tighter constraints
+  - 72 autoresearch experiments across 4 batches (original + advanced + extended + round2)
+  - SVR discovered as #2 model (Sharpe 0.868) — feedback loop correctly identified gap
+  - Concentration wins monotonically: maxW 0.7 > 0.65 > 0.6 > 0.5 > 0.4 > 0.3
+  - Regime-conditional hurts: splitting by VIX reduces training data, worse results
+  - IC-weighted ensemble underperforms single LGBM — no diversification gain
 
  ARCHITECTURE
  ════════════
@@ -101,8 +114,8 @@
   ┌──────────────┐   ┌────────────────────┐   ┌──────────────────────────────┐
   │ train.py     │   │ financial_simulator│   │ src/integration/             │
   │ --batch      │──→│ 14 agents          │──→│   autoresearch_bridge.py     │
-  │ 27 experiments│  │ 35 rounds          │   │   mirofish_bridge.py         │
-  │ Sharpe 0.832 │   │ agreement 0.247    │   │   feedback_loop.py           │
+  │ 72 experiments│  │ 35 rounds          │   │   mirofish_bridge.py         │
+  │ Sharpe 0.938 │   │ agreement 0.247    │   │   feedback_loop.py           │
   └──────┬───────┘   └────────┬───────────┘   │   _backtest_helpers.py       │
          │                    │               │                              │
          │  best config       │  risk overlay │ run_all.py (5-step loop)     │

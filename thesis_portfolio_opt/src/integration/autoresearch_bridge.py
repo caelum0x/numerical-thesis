@@ -61,7 +61,7 @@ def _parse_experiment_name(name: str, description: str) -> dict:
 
     # Model type
     model_type = "lgbm"  # default
-    for m in ["lasso", "ridge", "xgb", "rf", "elastic", "ensemble", "lgbm"]:
+    for m in ["lasso", "ridge", "xgb", "rf", "elastic", "ensemble", "svr", "gbr", "adaboost", "lgbm"]:
         if m in name_lower or m in desc_lower:
             model_type = m
             break
@@ -126,11 +126,13 @@ class AutoResearchBridge:
         self.autoresearch_dir = autoresearch_dir
         self._batch_path = os.path.join(autoresearch_dir, 'batch_results.csv')
         self._advanced_path = os.path.join(autoresearch_dir, 'advanced_batch_results.csv')
+        self._extended_path = os.path.join(autoresearch_dir, 'extended_results.csv')
+        self._round2_path = os.path.join(autoresearch_dir, 'round2_results.csv')
 
     def get_all_results(self) -> pd.DataFrame:
         """Load and merge all experiment results."""
         frames = []
-        for path in [self._batch_path, self._advanced_path]:
+        for path in [self._batch_path, self._advanced_path, self._extended_path, self._round2_path]:
             if os.path.exists(path):
                 df = pd.read_csv(path)
                 df['source'] = os.path.basename(path)

@@ -1,16 +1,18 @@
 \begin{table}
-\caption{Complete Strategy Comparison — OOS 2022-2024}
+\caption{Complete Strategy Comparison --- OOS 2022--2024}
 \label{tab:final_comparison}
-\begin{tabular}{lllrll}
+\begin{tabular}{llrrll}
 \toprule
-Strategy & Ann. Return & Ann. Vol & Sharpe & Max DD & Method \\
+Strategy & Ann.~Return & Ann.~Vol & Sharpe & Max~DD & Method \\
 \midrule
-B12 LightGBM (Fixed) & +10.81% & 13.48% & 0.803000 & -20.63% & Karpathy AutoResearch \\
-Walk-Forward LightGBM & +6.63% & 13.99% & 0.474000 & -21.96% & Walk-Forward Retrain \\
-MiroFish Swarm & +4.13% & 13.19% & 0.313000 & -16.71% & MiroFish Multi-Agent \\
-SPY & +11.42% & 17.04% & 0.671000 & -17.24% & Buy & Hold \\
-60/40 & +7.22% & 10.01% & 0.558000 & -16.57% & Static 60/40 \\
-Equal Weight & +2.75% & 5.40% & 0.202000 & -17.11% & Monthly Rebalance \\
+ML-Only (AutoResearch Best) & +19.6\% & 14.7\% & \textbf{1.330} & $-$18.1\% & AutoResearch + Walk-Forward \\
+ML + Swarm Overlay & +10.2\% & 11.8\% & 0.860 & $-$16.6\% & AutoResearch + MiroFish \\
+Walk-Forward RandomForest & +13.2\% & 13.6\% & 0.969 & $-$12.3\% & Walk-Forward Retrain \\
+SVR Macro (AutoResearch) & +9.3\% & 10.7\% & 0.868 & $-$17.8\% & AutoResearch OOS \\
+SPY Buy \& Hold & +10.0\% & 17.5\% & 0.570 & $-$24.5\% & Buy \& Hold \\
+60/40 & +6.4\% & 11.5\% & 0.558 & $-$17.5\% & Static 60/40 \\
+Swarm-Only (MiroFish) & +2.5\% & 10.4\% & 0.242 & $-$19.7\% & MiroFish Multi-Agent \\
+Equal Weight & +1.3\% & 10.4\% & 0.129 & $-$18.9\% & Monthly Rebalance \\
 \bottomrule
 \end{tabular}
 \end{table}

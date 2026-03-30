@@ -1,15 +1,15 @@
 \begin{table}
-\caption{Top 5 AutoResearch Strategies (Karpathy Pattern)}
+\caption{Top 5 AutoResearch Strategies (72 Experiments, Karpathy Pattern)}
 \label{tab:autoresearch_top5}
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrl}
 \toprule
-Strategy & Sharpe & IC & Ann. Return & Max DD \\
+Strategy & Sharpe & IC & Ann.~Return & Max~DD & Description \\
 \midrule
-B12_lgbm_macro_maxw50 & 0.8025 & 0.0378 & 0.1081 & -0.2063 \\
-B11_lgbm_macro_tc5 & 0.4903 & 0.0378 & 0.0610 & -0.2104 \\
-B2_lgbm_macro & 0.4657 & 0.0378 & 0.0580 & -0.2123 \\
-B6_lgbm_macro_lam10 & 0.3407 & 0.0378 & 0.0406 & -0.2142 \\
-B9_xgb_macro & 0.2250 & -0.0045 & 0.0276 & -0.2503 \\
+D13\_lgbm\_maxw60\_tc3 & \textbf{0.938} & 0.038 & +12.7\% & $-$20.9\% & LGBM macro maxW=0.6 tc=3bps \\
+D10\_lgbm\_maxw70 & 0.925 & 0.038 & +12.8\% & $-$22.2\% & LGBM macro maxW=0.7 \\
+D9\_lgbm\_maxw65 & 0.912 & 0.038 & +12.5\% & $-$21.8\% & LGBM macro maxW=0.65 \\
+D8\_svr\_maxw60 & 0.903 & 0.200 & +10.6\% & $-$18.3\% & SVR macro maxW=0.6 \\
+C22\_lgbm\_maxw60 & 0.897 & 0.038 & +12.2\% & $-$21.3\% & LGBM macro maxW=0.6 tc=10bps \\
 \bottomrule
 \end{tabular}
 \end{table}

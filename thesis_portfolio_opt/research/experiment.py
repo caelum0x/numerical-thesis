@@ -9,7 +9,8 @@ Current experiment: BASELINE — Lasso predictions with MV optimization (λ=5)
 
 import sys, os, warnings, pickle, time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-os.environ['FRED_API_KEY'] = 'd6995d762b3aed1ddd40e8ae0bdeb08a'
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 warnings.filterwarnings('ignore')
 
 import pandas as pd

@@ -17,6 +17,13 @@ import pickle
 import warnings
 warnings.filterwarnings('ignore')
 
+from dotenv import load_dotenv
+
+# Load .env from thesis root (parent of autoresearch/) and from local dir
+_thesis_root = os.path.join(os.path.dirname(__file__), '..')
+load_dotenv(os.path.join(_thesis_root, '.env'))
+load_dotenv(os.path.join(_thesis_root, 'thesis_portfolio_opt', '.env'))
+
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -100,7 +107,9 @@ def fetch_macro(start='2005-01-01', end='2024-12-31'):
         print(f"Macro data already exists at {path}")
         return pd.read_csv(path, index_col=0, parse_dates=True)
 
-    api_key = os.environ.get('FRED_API_KEY', 'd6995d762b3aed1ddd40e8ae0bdeb08a')
+    api_key = os.environ.get('FRED_API_KEY')
+    if not api_key:
+        raise EnvironmentError("FRED_API_KEY not set. Export it or add to .env file.")
     fred = Fred(api_key=api_key)
     frames = {}
     for sid, desc in FRED_SERIES.items():
@@ -630,7 +639,20 @@ def run_oos_backtest(prices, models, features, feat_cols,
             for j, ticker in enumerate(tickers):
                 if ticker in models:
                     m = models[ticker]
-                    X_s = m['scaler'].transform(row)
+                    transform = m.get('transform', {'type': 'none'})
+                    if transform['type'] == 'pca':
+                        row_s = transform['pca_scaler'].transform(row)
+                        row_t = pd.DataFrame(
+                            transform['pca'].transform(row_s),
+                            index=row.index,
+                            columns=transform['pc_cols'],
+                        )
+                        X_s = m['scaler'].transform(row_t)
+                    elif transform['type'] == 'feature_selection':
+                        row_t = row[transform['selected_cols']]
+                        X_s = m['scaler'].transform(row_t)
+                    else:
+                        X_s = m['scaler'].transform(row)
                     mu[j] = m['model'].predict(X_s)[0] * (252 / prediction_horizon)
 
             if shrinkage > 0:
@@ -1258,8 +1280,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--no-fetch', action='store_true', help='Skip fetching, just rebuild features')
     args = parser.parse_args()
-
-    os.environ.setdefault('FRED_API_KEY', 'd6995d762b3aed1ddd40e8ae0bdeb08a')
 
     if not args.no_fetch:
         prices = fetch_prices()

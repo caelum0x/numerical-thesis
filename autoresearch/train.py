@@ -123,27 +123,41 @@ def train_ensemble(model_list, X_train, y_train, X_test, y_test, weights=None):
 
 
 def apply_feature_transform(X_train, X_test, y_train, feat_cols):
-    """Apply PCA or feature selection if configured."""
+    """Apply PCA or feature selection if configured.
+
+    Returns (X_train_t, X_test_t, used_cols, transform_info) where
+    transform_info is a dict stored per-model so the backtest can
+    replay the same transform on live rows.
+    """
+    transform_info = {'type': 'none'}
+
     if USE_FEATURE_SELECTION:
         scaler = StandardScaler()
         X_tr_s = scaler.fit_transform(X_train)
         mi = mutual_info_regression(X_tr_s, y_train, random_state=42)
         top_idx = np.argsort(mi)[-FEATURE_SELECTION_TOP_K:]
         selected_cols = [feat_cols[i] for i in top_idx]
-        return X_train[selected_cols], X_test[selected_cols], selected_cols
+        transform_info = {'type': 'feature_selection', 'selected_cols': selected_cols}
+        return X_train[selected_cols], X_test[selected_cols], selected_cols, transform_info
 
     if USE_PCA:
         scaler = StandardScaler()
         X_tr_s = scaler.fit_transform(X_train)
         X_te_s = scaler.transform(X_test)
         pca = PCA(n_components=PCA_COMPONENTS, random_state=42)
-        X_tr_pca = pd.DataFrame(pca.fit_transform(X_tr_s), index=X_train.index,
-                                 columns=[f'PC{i}' for i in range(PCA_COMPONENTS)])
-        X_te_pca = pd.DataFrame(pca.transform(X_te_s), index=X_test.index,
-                                 columns=[f'PC{i}' for i in range(PCA_COMPONENTS)])
-        return X_tr_pca, X_te_pca, list(X_tr_pca.columns)
+        pc_cols = [f'PC{i}' for i in range(PCA_COMPONENTS)]
+        X_tr_pca = pd.DataFrame(pca.fit_transform(X_tr_s), index=X_train.index, columns=pc_cols)
+        X_te_pca = pd.DataFrame(pca.transform(X_te_s), index=X_test.index, columns=pc_cols)
+        transform_info = {
+            'type': 'pca',
+            'pca': pca,
+            'pca_scaler': scaler,
+            'pc_cols': pc_cols,
+            'original_cols': feat_cols,
+        }
+        return X_tr_pca, X_te_pca, pc_cols, transform_info
 
-    return X_train, X_test, feat_cols
+    return X_train, X_test, feat_cols, transform_info
 
 
 def run_experiment(experiment_name, description, model_list, feat_fn, risk_aversion,
@@ -180,7 +194,7 @@ def run_experiment(experiment_name, description, model_list, feat_fn, risk_avers
         if len(X_train) < 500 or len(X_test) < 50:
             continue
 
-        X_train_t, X_test_t, used_cols = apply_feature_transform(
+        X_train_t, X_test_t, used_cols, transform_info = apply_feature_transform(
             X_train, X_test, y_train, feat_cols
         )
 
@@ -188,18 +202,21 @@ def run_experiment(experiment_name, description, model_list, feat_fn, risk_avers
             trained, pred, ic, da = train_ensemble(
                 model_list, X_train_t, y_train, X_test_t, y_test, ensemble_weights
             )
-            # Store all models for backtest prediction
             models[ticker] = {
                 'ensemble': trained,
                 'scaler': StandardScaler().fit(X_train_t),
                 'feat_cols': used_cols,
+                'transform': transform_info,
             }
         else:
             name, template = model_list[0]
             m, scaler, pred, ic, da = train_single_model(
                 template, X_train_t, y_train, X_test_t, y_test
             )
-            models[ticker] = {'model': m, 'scaler': scaler, 'feat_cols': used_cols}
+            models[ticker] = {
+                'model': m, 'scaler': scaler, 'feat_cols': used_cols,
+                'transform': transform_info,
+            }
 
         oos_ics.append(ic)
         oos_das.append(da)
@@ -210,8 +227,9 @@ def run_experiment(experiment_name, description, model_list, feat_fn, risk_avers
     # Build models dict compatible with run_oos_backtest
     bt_models = {}
     for ticker, md in models.items():
+        transform = md.get('transform', {'type': 'none'})
+
         if 'ensemble' in md:
-            # Create a wrapper that averages ensemble predictions
             class EnsembleWrapper:
                 def __init__(self, trained_models, ew):
                     self.trained = trained_models
@@ -228,13 +246,21 @@ def run_experiment(experiment_name, description, model_list, feat_fn, risk_avers
             bt_models[ticker] = {
                 'model': EnsembleWrapper(md['ensemble'], ensemble_weights),
                 'scaler': md['scaler'],
+                'transform': transform,
             }
         else:
-            bt_models[ticker] = {'model': md['model'], 'scaler': md['scaler']}
+            bt_models[ticker] = {
+                'model': md['model'], 'scaler': md['scaler'],
+                'transform': transform,
+            }
+
+    # Use original feat_cols for backtest so it can extract raw features,
+    # then each model's transform will handle PCA/selection internally
+    backtest_feat_cols = feat_cols
 
     # Backtest
     rets = run_oos_backtest(
-        prices, bt_models, features, feat_cols,
+        prices, bt_models, features, backtest_feat_cols,
         risk_aversion=risk_aversion, max_weight=max_weight,
         rebalance_freq=rebalance_freq, tc_bps=tc_bps, shrinkage=shrinkage,
     )

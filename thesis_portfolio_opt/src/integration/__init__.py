@@ -9,3 +9,4 @@ Modules:
 
 from src.integration.autoresearch_bridge import AutoResearchBridge
 from src.integration.mirofish_bridge import MiroFishBridge
+from src.integration.feedback_loop import run_feedback_loop

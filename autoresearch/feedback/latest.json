@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-03-30T20:27:37.792582",
+  "iteration": 1,
+  "winning_strategy": {
+    "name": "ML_Only",
+    "sharpe": 1.2936,
+    "beats_spy_by": 0.7232
+  },
+  "swarm_impact": {
+    "sharpe_delta": -0.466,
+    "drawdown_improvement": 0.0162,
+    "volatility_reduction": -0.0257,
+    "verdict": "beneficial_risk"
+  },
+  "gaps": {
+    "untried_models": [
+      "elastic",
+      "svr"
+    ],
+    "untried_features": [
+      "momentum",
+      "technical"
+    ]
+  },
+  "next_experiments": [
+    {
+      "name": "lower_risk_aversion_with_swarm",
+      "rationale": "Swarm overlay reduces drawdown \u2014 try lower \u03bb to capture more return",
+      "params": {
+        "risk_aversion": 2.0,
+        "max_weight": 0.5
+      }
+    },
+    {
+      "name": "try_elastic_macro",
+      "rationale": "elastic not yet tested with macro features",
+      "params": {
+        "model_type": "elastic",
+        "feature_set": "macro"
+      }
+    },
+    {
+      "name": "try_svr_macro",
+      "rationale": "svr not yet tested with macro features",
+      "params": {
+        "model_type": "svr",
+        "feature_set": "macro"
+      }
+    },
+    {
+      "name": "push_sharpe_tight_constraints",
+      "rationale": "Current best Sharpe=1.294 \u2014 try tighter turnover/weight constraints",
+      "params": {
+        "max_weight": 0.3,
+        "shrinkage": 0.2
+      }
+    },
+    {
+      "name": "regime_conditional_model",
+      "rationale": "No regime-conditional experiments found \u2014 VIX-based model switching",
+      "params": {
+        "model_type": "lgbm",
+        "feature_set": "macro",
+        "regime": true
+      }
+    },
+    {
+      "name": "ensemble_top3_weighted",
+      "rationale": "Try IC-weighted ensemble of top 3 performing models",
+      "params": {
+        "model_type": "ensemble",
+        "ensemble_method": "ic_weighted"
+      }
+    }
+  ]
+}

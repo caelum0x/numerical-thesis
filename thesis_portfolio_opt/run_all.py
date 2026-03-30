@@ -443,6 +443,24 @@ def step_compare() -> None:
 
 
 # ============================================================================
+# Step 5: Feedback loop — close the cycle
+# ============================================================================
+
+def step_feedback() -> dict:
+    """Analyze results and write feedback for the next autoresearch iteration.
+
+    Closes the loop: pipeline results → feedback.json → autoresearch reads
+    it on next run to know what worked, what didn't, and what to try next.
+    """
+    print("\n" + "=" * 70)
+    print("  STEP 5: FEEDBACK LOOP — Closing the Cycle")
+    print("=" * 70)
+
+    from src.integration.feedback_loop import run_feedback_loop
+    return run_feedback_loop()
+
+
+# ============================================================================
 # Main
 # ============================================================================
 
@@ -452,11 +470,13 @@ def main() -> None:
     parser.add_argument('--mirofish', action='store_true', help='Run MiroFish only')
     parser.add_argument('--pipeline', action='store_true', help='Run integrated backtest only')
     parser.add_argument('--compare', action='store_true', help='Generate comparison figures only')
+    parser.add_argument('--feedback', action='store_true', help='Run feedback loop only')
+    parser.add_argument('--loop', type=int, default=1, metavar='N', help='Run N full iterations of the closed loop')
     parser.add_argument('--no-autoresearch', action='store_true', help='Skip autoresearch (use cached)')
     parser.add_argument('--no-mirofish', action='store_true', help='Skip MiroFish (use cached)')
     args = parser.parse_args()
 
-    run_specific = args.autoresearch or args.mirofish or args.pipeline or args.compare
+    run_specific = args.autoresearch or args.mirofish or args.pipeline or args.compare or args.feedback
     t0 = time.time()
 
     # Step 1: AutoResearch
@@ -483,17 +503,38 @@ def main() -> None:
             mf_info = {'available': True}
             print(f"\n  Using cached MiroFish: {mf.summary()}")
 
-    # Step 3: Integrated pipeline
-    if args.pipeline or not run_specific:
-        step_pipeline(ar_config, mf_info)
+    # Support multi-iteration closed loop
+    n_iterations = args.loop if not run_specific else 1
 
-    # Step 4: Comparison
-    if args.compare or not run_specific:
-        step_compare()
+    for iteration in range(n_iterations):
+        if n_iterations > 1:
+            print(f"\n{'#' * 70}")
+            print(f"  ITERATION {iteration + 1} / {n_iterations}")
+            print(f"{'#' * 70}")
+
+        # Step 3: Integrated pipeline
+        if args.pipeline or not run_specific:
+            step_pipeline(ar_config, mf_info)
+
+        # Step 4: Comparison
+        if args.compare or not run_specific:
+            step_compare()
+
+        # Step 5: Feedback loop — close the cycle
+        if args.feedback or not run_specific:
+            step_feedback()
+
+        # For subsequent iterations, re-run autoresearch with feedback
+        if iteration < n_iterations - 1 and not args.no_autoresearch:
+            print("\n  Re-running autoresearch with feedback from iteration "
+                  f"{iteration + 1}...")
+            ar_config = step_autoresearch()
+            if not args.no_mirofish:
+                mf_info = step_mirofish()
 
     elapsed = time.time() - t0
     print("\n" + "=" * 70)
-    print(f"  ALL DONE ({elapsed:.0f}s)")
+    print(f"  ALL DONE — {n_iterations} iteration(s) in {elapsed:.0f}s")
     print("=" * 70)
 
     # Final summary

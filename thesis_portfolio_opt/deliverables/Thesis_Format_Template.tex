@@ -1,0 +1,106 @@
+\documentclass[12pt,a4paper]{report}
+
+% Thesis formatting shell.
+% Purpose: provide a template-ready wrapper for justified paragraphs,
+% page numbering, captions, tables, and figure placement.
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\geometry{
+  left=3.0cm,
+  right=2.5cm,
+  top=2.5cm,
+  bottom=2.5cm
+}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% LaTeX fully justifies paragraphs by default. These settings avoid
+% overfull-line artifacts in dense financial text and tables.
+\tolerance=1000
+\emergencystretch=2em
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+\captionsetup[table]{
+  labelfont=bf,
+  labelsep=period,
+  justification=centering,
+  singlelinecheck=false,
+  position=top
+}
+
+\captionsetup[figure]{
+  labelfont=bf,
+  labelsep=period,
+  justification=centering,
+  singlelinecheck=false,
+  position=bottom
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=black
+}
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\begin{titlepage}
+\centering
+{\Large Macroeconomic Factor-Based Dynamic Portfolio Optimization\\}
+\vspace{0.3cm}
+{\Large with Autonomous Research and Swarm Intelligence\\}
+\vspace{1.5cm}
+{\large Industrial Engineering Thesis Draft\\}
+\vfill
+{\large 2026\\}
+\end{titlepage}
+
+\tableofcontents
+\listoftables
+\listoffigures
+
+\clearpage
+\pagenumbering{arabic}
+
+% Insert final chapter files here after converting the markdown thesis text
+% to LaTeX or after moving the final Word-template content into LaTeX.
+%
+% Recommended structure:
+% \chapter{Introduction}
+% \chapter{Literature Review}
+% \chapter{Methodology}
+% \chapter{Empirical Results}
+% \chapter{Implementation Framework}
+% \chapter{Discussion}
+% \chapter{Conclusion}
+
+\chapter{Empirical Results}
+
+% Current `Chapter4_Results.tex` is a standalone article file with its own
+% \documentclass and \begin{document}. Before compiling the full thesis,
+% move only its body content into a chapter-body file, then include it here:
+%
+% \input{Chapter4_Body.tex}
+
+\end{document}

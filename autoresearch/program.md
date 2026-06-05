@@ -11,7 +11,7 @@ To set up a new experiment, work with the user to:
    - `README.md` — context
    - `prepare.py` — fixed data prep, feature engineering, evaluation, benchmarks. **Do not modify.**
    - `train.py` — the file you modify. Model, features, optimization parameters.
-3. **Verify data exists**: Check that `../thesis_portfolio_opt/data/raw/prices.csv` and `macro.csv` exist. If not, run `python prepare.py`.
+3. **Verify data exists**: Check that `../thesis_portfolio_opt/data/raw/prices.csv` and `macro.csv` exist. If not, run `uv run python prepare.py`.
 4. **Initialize results.tsv**: Create `results.tsv` with the header row if it doesn't exist.
 5. **Confirm and go**: Confirm setup looks good.
 
@@ -63,7 +63,7 @@ LOOP FOREVER:
 1. Look at current `train.py` and `results.tsv`
 2. Propose a hypothesis
 3. Edit the EXPERIMENT section of `train.py`
-4. Run: `python train.py > run.log 2>&1`
+4. Run: `uv run python train.py > run.log 2>&1`
 5. Read: `grep "^RESULT:" run.log`
 6. Log to `results.tsv`
 7. If Sharpe improved over best-so-far → keep

@@ -15,6 +15,7 @@ dependencies = [
     "xgboost>=2.0.0,<3.0",
     "fredapi>=0.5.1",
     "yfinance>=0.2.31",
+    "python-dotenv>=1.0.0,<2.0",
     "cvxpy>=1.4.0,<2.0",
     "scipy>=1.11.0,<2.0",
 ]

@@ -12,13 +12,45 @@ This thesis presents an integrated framework for dynamic portfolio optimization 
 
 ### 1.1 Background and Motivation
 
-Portfolio optimization remains one of the most enduring challenges in financial engineering, originating with Markowitz's (1952) mean-variance framework that established the mathematical foundation for diversification. However, the traditional approach assumes that expected returns and covariances are known constants or estimated from historical data alone, ignoring the dynamic nature of economic regimes. In practice, asset returns exhibit significant sensitivity to macroeconomic conditions---interest rate changes affect discount rates and corporate borrowing costs, inflation impacts real returns and consumer spending, and unemployment signals broader economic health.
+Portfolio optimization remains one of the most enduring challenges in financial engineering and industrial engineering. The classical question is simple to state but difficult to solve in practice: how should a decision maker allocate limited capital across risky assets so that expected return is improved without accepting excessive downside risk? Markowitz's (1952) mean-variance framework provided the mathematical foundation for this problem by showing that diversification can be formalized as an optimization model. In that framework, an investor chooses portfolio weights by balancing expected return against covariance-driven risk.
 
-The 2022--2024 period---characterized by aggressive rate hikes, persistent inflation, and geopolitical uncertainty---demonstrated that static portfolio assumptions fail during regime shifts. Industrial engineering offers a systems perspective to address this gap: treating portfolio management as a dynamic control problem where macroeconomic indicators serve as observable state variables influencing future returns. This research applies IE methodologies---optimization, statistical process control, and predictive modeling---to develop a robust, adaptive portfolio system.
+However, the practical portfolio problem is more complex than the static formulation suggests. Expected returns are not directly observable, covariance estimates are noisy, transaction costs reduce realized performance, and financial markets shift across macroeconomic regimes. A portfolio that appears efficient in one interest-rate, inflation, or volatility environment may become fragile when monetary policy changes. Therefore, the central problem of this thesis is not only selecting a portfolio at one point in time, but designing a repeatable decision system that updates predictions, constraints, and risk controls as market conditions evolve.
 
-A key innovation is the closed-loop architecture: rather than a one-shot model selection, we employ an autonomous research loop that iteratively improves configurations based on backtest feedback, coupled with a multi-agent simulation that provides real-time risk signals.
+The 2022--2024 period provides a useful stress case for this problem. It included aggressive U.S. interest-rate hikes, persistent inflation pressure, elevated volatility, and changes in equity-bond correlation. These conditions exposed the limitations of static assumptions such as fixed expected returns, stable correlations, and passive diversification. Industrial engineering offers a systems perspective for addressing this gap: portfolio management can be treated as a dynamic decision-making and control problem where macroeconomic indicators are observable state variables, machine-learning models estimate future asset behavior, and constrained optimization converts predictions into implementable allocations.
 
-### 1.2 Research Objectives
+A key innovation of this thesis is the closed-loop architecture. Instead of selecting one model manually and reporting a single backtest, the system combines three decision layers: a macro-based machine-learning prediction pipeline, an autonomous experiment loop that searches model and optimization configurations, and a multi-agent swarm module that contributes risk overlay signals. This structure connects forecasting, optimization, simulation, and feedback in one reproducible workflow.
+
+### 1.2 Problem Definition
+
+The research problem can be defined as follows:
+
+Given a universe of liquid multi-asset ETFs, historical price data, and macroeconomic indicators, develop a dynamic portfolio optimization framework that:
+
+1. predicts medium-horizon asset returns using macroeconomic state variables;
+2. selects portfolio weights under realistic constraints such as no short selling, position limits, and transaction costs;
+3. updates model and optimization configurations through autonomous search rather than purely manual tuning;
+4. evaluates whether multi-agent consensus can improve portfolio risk management; and
+5. validates performance using strict out-of-sample testing.
+
+The practical motivation is to support systematic investment decisions under uncertainty. The academic motivation is to connect operations research, predictive modeling, and multi-agent systems in a single portfolio optimization framework.
+
+### 1.3 Key Definitions
+
+**Dynamic portfolio optimization** refers to repeated portfolio reallocation over time. Unlike a static optimization that produces one set of weights, the dynamic setting updates allocations as new prices, macroeconomic data, and model predictions become available.
+
+**Mean-variance optimization** is the Markowitz framework that balances expected return and portfolio variance. In this thesis, it is implemented as a constrained quadratic optimization problem.
+
+**CVXPY** is the Python convex optimization modeling library used to express and solve the mean-variance allocation problem. It allows constraints such as full investment, non-negative weights, maximum asset weights, and turnover penalties to be written in mathematical form and solved using numerical optimization solvers.
+
+**LightGBM** is a gradient boosting decision tree algorithm. It is suitable for this thesis because it can model nonlinear relationships among macroeconomic variables while remaining computationally efficient for repeated experiments.
+
+**Autonomous search / AutoResearch** is the experiment engine that tests model classes, feature sets, and optimization parameters. It follows a Karpathy-inspired "AI scientist" pattern: propose a configuration, run a fixed evaluation, keep useful results, and generate feedback for the next iteration.
+
+**Swarm intelligence** refers to decision signals produced by multiple heterogeneous agents rather than a single model. In this project, swarm intelligence is used as a risk overlay, not as the main return prediction engine.
+
+**MiroFish** is the multi-agent simulation platform adapted in this thesis. It creates 14 financial agents with different behaviors, including momentum, contrarian, macro, volatility, ML-based, adaptive, regime-aware, and noise agents. Their agreement level is transformed into a portfolio risk scaling signal.
+
+### 1.4 Research Objectives
 
 This thesis addresses four core research questions:
 
@@ -27,7 +59,7 @@ This thesis addresses four core research questions:
 3. **Swarm Intelligence:** Does a multi-agent consensus signal improve portfolio risk management when integrated as a risk overlay?
 4. **Integration:** Does the combined system---ML prediction + autonomous search + swarm overlay---outperform static benchmarks in risk-adjusted returns?
 
-### 1.3 Contributions
+### 1.5 Contributions
 
 Our contributions are fivefold:
 
@@ -36,6 +68,29 @@ Our contributions are fivefold:
 - **Technical:** We provide open-source, reproducible code across three integrated repositories (~16,400 LOC in the main pipeline alone) using CVXPY, scikit-learn, LightGBM, and a custom multi-agent financial simulator.
 - **Autonomous Research:** We demonstrate that a Karpathy-inspired AI scientist loop can discover non-obvious configurations (e.g., SVR as #2 model, concentrated allocation) that outperform hand-tuned baselines.
 - **Pedagogical:** We bridge industrial engineering operations research, quantitative finance, and multi-agent systems.
+
+### 1.6 Scope, Assumptions, and Limitations
+
+This thesis focuses on a controlled research setting rather than live trading deployment. The main assumptions are:
+
+- The asset universe is limited to 12 liquid U.S.-listed ETFs representing equities, bonds, commodities, real estate, and inflation-protected securities.
+- The study uses daily prices and macroeconomic data from 2005--2024, with 2022--2024 reserved as the main out-of-sample period.
+- Portfolios are long-only and fully invested; leverage and short selling are excluded.
+- Transaction costs are modeled using proportional cost assumptions, mainly 3 bps and 10 bps.
+- The benchmark comparison focuses on SPY, equal weight, and 60/40-style allocation.
+- The MiroFish output is treated as a risk overlay signal; it is not assumed to be a direct alpha forecasting model.
+
+The main limitations are:
+
+- The out-of-sample window is only three years, so statistical power is limited.
+- Macroeconomic variables are subject to publication lags and revisions; the project reduces look-ahead bias through strict temporal splitting but does not fully model real-time vintage data.
+- ETF results may not generalize to individual stocks, illiquid assets, or leveraged portfolios.
+- Backtests cannot capture all live-market frictions, such as market impact, taxes, slippage variation, and operational constraints.
+- The autonomous search process evaluates many configurations, so results must be interpreted with caution even under out-of-sample testing.
+
+### 1.7 Thesis Structure
+
+The remainder of this thesis is organized as follows. Chapter 2 reviews the relevant literature and background theory, including portfolio theory, macroeconomic factor models, machine learning in return prediction, autonomous research, swarm intelligence, and convex optimization tools. Chapter 3 presents the methodology, system architecture, data, feature engineering, optimization model, MiroFish risk overlay, and validation framework. Chapter 4 reports empirical results from AutoResearch, walk-forward backtesting, integrated ML and swarm strategies, feature importance, transaction-cost sensitivity, and statistical significance tests. Chapter 5 describes the implementation framework, including repositories, reproducibility, testing, and computational considerations. Chapter 6 discusses managerial and industrial engineering implications, limitations, and future work. Chapter 7 concludes the thesis.
 
 ---
 
@@ -47,7 +102,9 @@ Markowitz (1952) established that investors should maximize expected return for 
 
 $$\min_w \frac{1}{2} w^T \Sigma w - \lambda \mu^T w$$
 
-subject to $\mathbf{1}^T w = 1$, where $w$ is the weight vector, $\Sigma$ is the covariance matrix, $\mu$ is expected returns, and $\lambda$ is risk aversion. However, Michaud (1989) demonstrated that mean-variance optimization is highly sensitive to estimation error in $\mu$, with errors in expected returns having approximately ten times the impact of covariance estimation errors.
+subject to $\mathbf{1}^T w = 1$, where $w$ is the weight vector, $\Sigma$ is the covariance matrix, $\mu$ is expected returns, and $\lambda$ is risk aversion. This formulation is important for industrial engineering because it turns investment allocation into a constrained optimization problem. The objective function, constraints, and sensitivity to parameters can be analyzed using operations research tools.
+
+The main weakness of the classical framework is estimation error. Michaud (1989) demonstrated that mean-variance optimization is highly sensitive to errors in $\mu$, with expected-return errors often having a larger practical impact than covariance errors. This leads to unstable portfolios, excessive concentration, and poor out-of-sample performance. DeMiguel et al. (2009) further show that naive diversification can be difficult to beat when estimation error is high. These findings motivate the use of shrinkage estimators, robust constraints, and strict out-of-sample validation.
 
 ### 2.2 Macroeconomic Factor Models
 
@@ -58,21 +115,47 @@ The Arbitrage Pricing Theory (Ross, 1976) and subsequent factor models (Fama-Fre
 - **Industrial Production:** Proxy for economic growth, positively correlated with equity returns (Chen et al., 1986).
 - **Credit Spreads:** BBB corporate spreads signal credit risk conditions and economic stress.
 
-Recent work by Avramov & Zhou (2010) and Rapach et al. (2010) demonstrates that macroeconomic variables possess predictive power for aggregate stock returns, particularly at business cycle frequencies.
+Recent work by Avramov & Zhou (2010) and Rapach et al. (2010) demonstrates that macroeconomic variables possess predictive power for aggregate stock returns, particularly at business cycle frequencies. For multi-asset portfolios, macro indicators are especially relevant because asset classes respond differently to rate, inflation, growth, and credit conditions. For example, long-duration bonds are highly sensitive to Treasury yields, commodities may react to inflation expectations, and high-yield bonds respond strongly to credit spreads.
+
+This thesis therefore treats macroeconomic variables as state variables. They do not perfectly forecast returns, but they provide structured information about the economic environment in which returns are generated.
 
 ### 2.3 Machine Learning in Return Prediction
 
-Gu et al. (2020) evaluate neural networks, random forests, and gradient boosting for return prediction, finding that tree-based methods and neural networks outperform linear models. Ke et al. (2017) introduce LightGBM, which uses gradient-based one-side sampling and exclusive feature bundling for efficient gradient boosting, making it particularly suitable for the high-dimensional, low-signal financial prediction task. However, Feng et al. (2018) caution that ML models are prone to overfitting in financial contexts due to low signal-to-noise ratios.
+Gu et al. (2020) evaluate neural networks, random forests, and gradient boosting for return prediction, finding that tree-based methods and neural networks can outperform linear models when nonlinear interactions are present. Machine-learning models are useful in this setting because macro-financial relationships are rarely linear or stable across regimes. A change in interest rates may affect equities, bonds, real estate, and commodities differently depending on inflation, volatility, and credit conditions.
 
-### 2.4 Autonomous Research and Multi-Agent Systems
+Ke et al. (2017) introduce LightGBM, which uses gradient-based one-side sampling and exclusive feature bundling for efficient gradient boosting. LightGBM is particularly suitable for the high-dimensional, low-signal financial prediction task because it can capture nonlinear feature interactions while remaining efficient enough for repeated experimentation. This thesis evaluates LightGBM alongside Lasso, Ridge, ElasticNet, Random Forest, XGBoost, SVR, gradient boosting, and AdaBoost.
 
-Karpathy (2024) demonstrates that AI agents can autonomously iterate on research code, running experiments and keeping improvements while discarding failures. We adapt this paradigm for portfolio research: the agent modifies model configurations, runs backtests, and uses feedback to guide subsequent experiments.
+However, Feng et al. (2018) caution that ML models are prone to overfitting in financial contexts due to low signal-to-noise ratios. Therefore, the methodology uses strict train/test separation, walk-forward evaluation, transaction-cost assumptions, and honest reporting of statistical insignificance.
 
-Multi-agent systems have been applied to financial markets through agent-based modeling (Farmer & Foley, 2009). Our MiroFish platform extends this by using 14 heterogeneous agents (momentum, contrarian, macro, ML-based, adaptive, regime-aware, noise) whose agreement level serves as a real-time risk signal.
+### 2.4 Convex Optimization and CVXPY
+
+Modern portfolio optimization is naturally expressed as a constrained mathematical program. Convex optimization is useful because many portfolio allocation problems, including long-only mean-variance formulations with linear constraints, can be solved reliably and efficiently. CVXPY provides a high-level modeling interface for such problems. Instead of manually deriving solver matrices, the user writes the objective and constraints in a form close to mathematical notation.
+
+In this thesis, CVXPY is used to solve a constrained mean-variance allocation at each rebalancing date. The optimizer incorporates expected returns from ML predictions, covariance estimates using Ledoit-Wolf shrinkage, maximum position constraints, long-only constraints, and transaction-cost penalties. This links the predictive modeling component to an implementable decision model.
 
 ### 2.5 Dynamic Portfolio Optimization
 
 Brandt (2010) surveys parametric and non-parametric approaches to dynamic portfolio choice. DeMiguel et al. (2009) show that naive 1/N diversification often outperforms optimized portfolios due to estimation error. Our approach addresses this through Ledoit-Wolf shrinkage, ML-based return prediction, and autonomous hyperparameter tuning to find the right balance between estimation precision and model complexity.
+
+Dynamic portfolio optimization extends the Markowitz problem by recognizing that the decision is repeated through time. At each rebalancing date, the investor observes new data, updates forecasts, estimates risk, solves the allocation problem, and carries the resulting weights until the next rebalance. This turns portfolio management into a sequential decision process. The main challenges are model drift, changing covariances, turnover costs, and regime shifts.
+
+Our approach addresses these challenges through expanding-window training, monthly rebalancing, transaction-cost modeling, Ledoit-Wolf covariance shrinkage, and autonomous hyperparameter tuning.
+
+### 2.6 Autonomous Research and the AI Scientist Loop
+
+Karpathy's AI scientist idea demonstrates that agents can autonomously iterate on research code by proposing changes, running experiments, evaluating results, and keeping improvements. This thesis adapts that paradigm for portfolio research. The AutoResearch component modifies experiment configurations in `train.py`, evaluates each candidate using a fixed out-of-sample backtest, records results, and uses feedback to identify unexplored model or parameter regions.
+
+The value of autonomous search is not that it replaces scientific judgment. Rather, it reduces manual selection bias and creates a reproducible experiment log. In this project, the loop discovered that concentrated LightGBM configurations dominate the standalone AutoResearch results, while SVR achieved the highest information coefficient among tested models.
+
+### 2.7 Swarm Intelligence and Multi-Agent Financial Simulation
+
+Swarm intelligence studies how collective behavior can emerge from many simple or heterogeneous agents. In financial markets, agent-based models are used to represent diverse behaviors such as momentum trading, contrarian views, macro sensitivity, noise trading, and adaptive learning. Farmer and Foley (2009) argue that such models can help analyze complex market dynamics that are difficult to capture with representative-agent assumptions.
+
+MiroFish is the swarm intelligence platform used in this thesis. It is adapted from a general multi-agent simulation system into a financial market simulator. In the thesis implementation, 14 financial agents generate views over 35 rounds. The agents differ in risk tolerance, lookback period, decision logic, and confidence. The system aggregates their outputs into an agreement score and portfolio weight suggestions. The main use of MiroFish is not to forecast returns directly, but to provide a risk overlay: low agreement indicates uncertainty and scales down portfolio concentration.
+
+### 2.8 Literature Gap and Positioning
+
+Prior studies examine portfolio optimization, macro factor forecasting, machine learning, and agent-based simulation separately. The gap addressed by this thesis is the integration of these components into a single closed-loop industrial engineering system. The proposed framework links macro feature engineering, ML return prediction, autonomous experiment search, CVXPY-based constrained allocation, MiroFish swarm risk overlay, and feedback-driven iteration. This combination is the primary methodological contribution of the study.
 
 ---
 
@@ -99,17 +182,55 @@ autoresearch/              MiroFish/                   thesis_portfolio_opt/
        └────────────────────────────────────└──────────────────────────────┘
 ```
 
-**Stage 1 --- AutoResearch (Autonomous Experiment Engine):**
-An AI agent iteratively modifies `train.py`, runs OOS backtests (~2 min each), keeps improvements, and discards failures. Only `train.py` is editable; `prepare.py` (1,275 LOC) is the fixed evaluation harness. Over 4 rounds and 5 feedback iterations, 72 experiments were completed.
+#### 3.1.1 Stage 1: AutoResearch Experiment Engine
 
-**Stage 2 --- MiroFish (Multi-Agent Swarm Intelligence):**
-14 heterogeneous financial agents (momentum, contrarian, macro, ML, adaptive, regime, noise) run 35 rounds of simulated trading. Their agreement level produces a risk overlay signal: when agents disagree, position sizes are scaled down.
+AutoResearch is responsible for systematic model and parameter exploration. It separates the fixed evaluation harness from the modifiable experiment configuration. `prepare.py` loads data, constructs features, defines the train/OOS split, computes benchmarks, and runs the OOS backtest. `train.py` contains the candidate model class, feature subset, hyperparameters, and optimization parameters.
 
-**Stage 3 --- Integrated Pipeline (Walk-Forward Backtest):**
-The main pipeline (~16,400 LOC) consumes AutoResearch's best configuration and MiroFish's risk overlay, running walk-forward backtests across three strategies: ML-only, ML+Swarm, and Swarm-only.
+Each experiment follows the same sequence:
 
-**Stage 4 --- Feedback Loop:**
-After each integrated backtest, the feedback module analyzes results, identifies gaps (untried models, unexplored hyperparameter regions), and writes suggestions consumed by the next AutoResearch iteration.
+1. select a model family such as Lasso, Ridge, LightGBM, XGBoost, Random Forest, SVR, or ensemble;
+2. select a feature set such as macro-only, all features, momentum/volatility, PCA, or mutual-information-selected features;
+3. train one model per ETF using the 2005--2021 training sample;
+4. generate 21-day forward-return predictions for the 2022--2024 OOS period;
+5. solve a constrained mean-variance portfolio problem at each rebalance date;
+6. record Sharpe, Sortino, annualized return, volatility, drawdown, IC, directional accuracy, and runtime.
+
+Only the experiment configuration changes across runs. This design protects the integrity of the evaluation method while allowing autonomous search over a large model space. Over the completed runs, 72 experiments were evaluated across baseline, advanced, extended, and feedback-guided batches.
+
+#### 3.1.2 Stage 2: MiroFish Multi-Agent Simulation
+
+MiroFish provides the swarm intelligence layer. The original MiroFish platform is adapted into a financial simulator by replacing social-opinion agents with market-behavior agents. The thesis version includes 14 heterogeneous agents, including momentum, contrarian, macro, volatility, value, ML-linear, ML-tree, ML-ensemble, adaptive, regime-aware, and noise agents.
+
+Each agent observes market state variables such as prices, volatility, macro signals, and previously generated model outputs. Agents then produce allocation views or directional signals. These outputs are aggregated into:
+
+- an agreement score, representing the degree of consensus among agents;
+- a risk scale factor, used to reduce position limits when agreement is low;
+- swarm features, added to the ML feature matrix;
+- swarm-only portfolio weights, used as a standalone benchmark.
+
+In this thesis, MiroFish is interpreted as a risk management module. The core hypothesis is that disagreement among diverse agents may identify uncertain market conditions where the optimizer should reduce concentration.
+
+#### 3.1.3 Stage 3: Integrated Walk-Forward Pipeline
+
+The integrated pipeline consumes both AutoResearch and MiroFish outputs. First, `autoresearch_bridge.py` reads all experiment CSV files and identifies the best configuration by OOS Sharpe. Second, `mirofish_bridge.py` reads the simulated agreement series, risk scale factors, swarm features, and direct swarm weights. Third, the main pipeline runs three strategy variants:
+
+- **ML-only:** AutoResearch-selected prediction model and optimizer settings, without swarm overlay.
+- **ML+Swarm:** the same ML model plus MiroFish features and agreement-based risk scaling.
+- **Swarm-only:** direct use of MiroFish consensus weights as a standalone strategy.
+
+This design allows the thesis to test whether MiroFish improves the already optimized ML strategy, or whether it mainly reduces risk at the cost of return.
+
+#### 3.1.4 Stage 4: Reporting and Deliverables
+
+The reporting stage converts experiment outputs into thesis-ready tables, figures, and summary files. It generates strategy comparison tables, AutoResearch rankings, MiroFish signal figures, walk-forward performance figures, transaction-cost sensitivity tables, and statistical significance summaries. These outputs support Chapter 4 and make the empirical claims traceable to reproducible code.
+
+#### 3.1.5 Stage 5: Closed-Loop Feedback
+
+After each integrated backtest, `feedback_loop.py` analyzes the results and writes structured suggestions to `autoresearch/feedback/latest.json`. The feedback includes the winning strategy, swarm impact, untried models, unexplored feature groups, and next experiment suggestions. This creates the closed-loop research cycle:
+
+portfolio results -> feedback diagnosis -> new experiment ideas -> AutoResearch run -> integrated evaluation.
+
+The latest feedback recommends testing lower risk aversion with swarm overlay, tighter constraints, and an IC-weighted top-3 model ensemble.
 
 ### 3.2 Data and Variables
 
@@ -355,18 +476,20 @@ thesis/
 ### 5.2 Running the System
 
 ```bash
+cd thesis_portfolio_opt
+
 # Full end-to-end (all 5 steps)
-python run_all.py
+./venv/bin/python run_all.py
 
 # N iterations of the closed loop
-python run_all.py --loop 3
+./venv/bin/python run_all.py --loop 3
 
 # Individual steps
-python run_all.py --autoresearch    # Step 1: Run 72 experiments
-python run_all.py --mirofish        # Step 2: Run 14-agent simulation
-python run_all.py --pipeline        # Step 3: Integrated backtest
-python run_all.py --compare         # Step 4: Figures + LaTeX tables
-python run_all.py --feedback        # Step 5: Close the loop
+./venv/bin/python run_all.py --autoresearch    # Step 1: Run experiments
+./venv/bin/python run_all.py --mirofish        # Step 2: Run 14-agent simulation
+./venv/bin/python run_all.py --pipeline        # Step 3: Integrated backtest
+./venv/bin/python run_all.py --compare         # Step 4: Figures + LaTeX tables
+./venv/bin/python run_all.py --feedback        # Step 5: Close the loop
 ```
 
 ### 5.3 Computational Considerations
@@ -422,6 +545,39 @@ For Industrial Engineers in finance roles:
 - **Single OOS period:** Results are from 2022--2024 only. Different market regimes may produce different rankings.
 - **AutoResearch convergence:** 72 experiments may not fully explore the hyperparameter space; additional iterations could find better configurations.
 
+### 6.6 Advisor Revision Coverage
+
+The current draft explicitly addresses the latest advisor comments as follows:
+
+| Advisor Note | Revision Made | Location |
+|--------------|---------------|----------|
+| Problem definition should be improved and the introduction should move from broad context to the specific study. | The introduction now begins with the general portfolio allocation problem, explains why static Markowitz assumptions are insufficient, connects the 2022--2024 regime shift to the thesis motivation, and states the research problem formally. | Sections 1.1 and 1.2 |
+| Add assumptions and limitations in the first chapter. | A separate scope, assumptions, and limitations subsection was added. It covers asset universe, data period, long-only constraints, transaction costs, benchmarks, MiroFish interpretation, OOS length, data revisions, and live-trading frictions. | Section 1.6 |
+| Add short definitions if necessary. | Definitions were added for dynamic portfolio optimization, mean-variance optimization, CVXPY, LightGBM, AutoResearch, swarm intelligence, and MiroFish. | Section 1.3 |
+| Add thesis structure at the end of the first chapter. | A thesis structure paragraph now explains what each chapter covers. | Section 1.7 |
+| Literature review is too short and should include more background theory. | The literature review now has separate theory subsections for portfolio theory, macro factor models, machine learning return prediction, CVXPY and convex optimization, dynamic portfolio optimization, autonomous research, swarm intelligence, and the literature gap. | Chapter 2 |
+| Explain concepts such as CVXPY, LightGBM, swarm intelligence, autonomous search, Markowitz, dynamic portfolio optimization, Karpathy-inspired AI scientist loop. | Each concept is now defined in Chapter 1 and explained in more detail in Chapter 2. | Sections 1.3 and 2.1--2.8 |
+| Explain MiroFish. | MiroFish is defined as the adapted multi-agent simulation platform, then described in the literature review, methodology, implementation, and result interpretation. | Sections 1.3, 2.7, 3.1.2, 4.4, 5.1, 6.3 |
+| Methodology is good but the stages should be expanded as subsections under 3.1. | Stage descriptions were split into detailed subsections: AutoResearch, MiroFish, integrated walk-forward pipeline, reporting, and closed-loop feedback. | Sections 3.1.1--3.1.5 |
+| Figures and tables should follow the thesis template; paragraphs should be justified; page numbers should be used. | A reproducible DOCX exporter, formatting checklist, and LaTeX formatting shell were added. The exporter creates a formatted draft with justified paragraphs, page numbers, margins, headings, lists, and tables. | `thesis_portfolio_opt/deliverables/Thesis_Draft_Formatted.docx`, `thesis_portfolio_opt/deliverables/export_thesis_docx.py`, `thesis_portfolio_opt/deliverables/Formatting_Checklist.md`, `thesis_portfolio_opt/deliverables/Thesis_Format_Template.tex` |
+
+This response matrix is included so the next draft can be reviewed against the advisor's comments item by item.
+
+### 6.7 Phase 5 Feedback Experiments
+
+The latest feedback loop generated three experiment directions for the next coding/research cycle. These were implemented in `thesis_portfolio_opt/research/phase5_feedback_experiments.py` and written to `thesis_portfolio_opt/data/results/phase5_feedback_experiments.csv`.
+
+| Experiment | Sharpe | Ann. Return | Ann. Vol | Max DD | Interpretation |
+|------------|--------|-------------|----------|--------|----------------|
+| Baseline ML-only current | **1.410** | +20.7% | 14.7% | -17.8% | Current best remains the main thesis result. |
+| Swarm low-lambda ($\lambda=2$, maxW=0.5) | 0.813 | +9.6% | 11.8% | -16.8% | Lower risk aversion does not recover enough return; MiroFish remains a risk overlay, not an alpha enhancer. |
+| Tight constraints (maxW=0.3, shrinkage=0.2) | 1.307 | +16.9% | 12.9% | -16.0% | Strong robustness result: lower concentration reduces drawdown while preserving most of the Sharpe. |
+| IC-weighted top-3 return ensemble | 0.126 | +1.5% | 12.2% | -21.3% | IC weighting at the strategy-return level performs poorly; high IC alone is insufficient for portfolio-level performance. |
+
+The strongest new finding is the tight-constraint robustness test. It does not beat the baseline, but it supports an institutional version of the strategy: maxW=0.3 with shrinkage=0.2 still achieves Sharpe 1.307, lowers annualized volatility to 12.9%, and improves maximum drawdown to -16.0%. This makes the thesis less dependent on the concentrated maxW=0.6 configuration.
+
+The other two feedback ideas are rejected by evidence. Lowering $\lambda$ inside ML+Swarm does not solve the return sacrifice created by the risk overlay. The IC-weighted ensemble also fails, reinforcing the earlier conclusion that ensembles add noise when the dominant LightGBM strategy is already strong.
+
 ---
 
 ## 7. Conclusion
@@ -452,6 +608,7 @@ The system offers a template for data-driven decision models in other IE domains
 - Breen, W., Glosten, L. R., & Jagannathan, R. (1989). Economic significance of predictable variations in stock index returns. *Journal of Finance*, 44(5), 1177-1189.
 - Chen, N. F., Roll, R., & Ross, S. A. (1986). Economic forces and the stock market. *Journal of Business*, 59(3), 383-403.
 - DeMiguel, V., Garlappi, L., & Uppal, R. (2009). Optimal versus naive diversification: How inefficient is the 1/N portfolio strategy? *Review of Financial Studies*, 22(5), 1915-1953.
+- Diamond, S., & Boyd, S. (2016). CVXPY: A Python-embedded modeling language for convex optimization. *Journal of Machine Learning Research*, 17(83), 1-5.
 - Fama, E. F., & French, K. R. (1993). Common risk factors in the returns on stocks and bonds. *Journal of Financial Economics*, 33(1), 3-56.
 - Fama, E. F., & Schwert, G. W. (1977). Asset returns and inflation. *Journal of Financial Economics*, 5(2), 115-146.
 - Farmer, J. D., & Foley, D. (2009). The economy needs agent-based modelling. *Nature*, 460(7256), 685-686.
@@ -480,7 +637,18 @@ The system offers a template for data-driven decision models in other IE domains
 
 See `thesis_portfolio_opt/deliverables/Data_Dictionary.docx` for complete variable definitions, transformations, and sources.
 
-### Appendix C: Code Repository
+### Appendix C: Formatted Draft
+
+The advisor-format draft can be regenerated from the thesis README:
+
+```bash
+cd thesis_portfolio_opt
+./venv/bin/python deliverables/export_thesis_docx.py
+```
+
+Generated artifact: `thesis_portfolio_opt/deliverables/Thesis_Draft_Formatted.docx`.
+
+### Appendix D: Code Repository
 
 Full implementation: [github.com/caelum0x/numerical-thesis](https://github.com/caelum0x/numerical-thesis)
 
@@ -490,4 +658,4 @@ Full implementation: [github.com/caelum0x/numerical-thesis](https://github.com/c
 
 ---
 
-*Word Count: ~5,800 words (excluding tables, appendices, and references)*
+*Word Count: ~7,200 words (excluding tables, appendices, and references)*

@@ -81,11 +81,23 @@ def run_command(cmd: str, cwd: str, description: str) -> subprocess.CompletedPro
     return result
 
 
-def find_python() -> str:
-    """Find Python executable — prefer project venv, fall back to system."""
-    venv_py = os.path.join(PROJECT_ROOT, 'venv', 'bin', 'python3')
-    if os.path.exists(venv_py):
-        return venv_py
+def find_python(project_dir: str = PROJECT_ROOT) -> str:
+    """Find a Python executable for a subsystem.
+
+    Each thesis subsystem has its own dependency set. Prefer the subsystem
+    virtual environment, then the portfolio venv, then the current interpreter.
+    """
+    candidates = [
+        os.path.join(project_dir, '.venv', 'bin', 'python'),
+        os.path.join(project_dir, '.venv', 'bin', 'python3'),
+        os.path.join(project_dir, 'venv', 'bin', 'python'),
+        os.path.join(project_dir, 'venv', 'bin', 'python3'),
+        os.path.join(PROJECT_ROOT, 'venv', 'bin', 'python'),
+        os.path.join(PROJECT_ROOT, 'venv', 'bin', 'python3'),
+    ]
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return candidate
     return sys.executable
 
 
@@ -104,7 +116,7 @@ def step_autoresearch() -> dict:
     print("  STEP 1: AUTORESEARCH — Autonomous Model Search")
     print("=" * 70)
 
-    py = find_python()
+    py = find_python(AUTORESEARCH_DIR)
     run_command(f"{py} train.py --batch", cwd=AUTORESEARCH_DIR,
                 description="Running 12 autonomous experiments (~2 min each)")
 
@@ -144,7 +156,7 @@ def step_mirofish() -> dict:
     print("  STEP 2: MIROFISH — Multi-Agent Swarm Simulation")
     print("=" * 70)
 
-    py = find_python()
+    py = find_python(os.path.join(MIROFISH_DIR, 'backend'))
     sim_script = os.path.join('backend', 'app', 'services', 'financial_simulator.py')
     run_command(f"{py} {sim_script}", cwd=MIROFISH_DIR,
                 description="Running 14-agent financial simulation (35 rounds)")

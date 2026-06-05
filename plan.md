@@ -126,13 +126,38 @@
          │  (next experiment suggestions)     │   Step 5: Feedback loop      │
          └────────────────────────────────────└──────────────────────────────┘
 
-  Run: python run_all.py              # single pass (all 5 steps)
-  Run: python run_all.py --loop 3     # 3 iterations of closed loop
-  Run: python run_all.py --feedback   # just analyze + write feedback
+  Run: cd thesis_portfolio_opt && ./venv/bin/python run_all.py              # single pass
+  Run: cd thesis_portfolio_opt && ./venv/bin/python run_all.py --loop 3     # 3 iterations
+  Run: cd thesis_portfolio_opt && ./venv/bin/python run_all.py --feedback   # feedback only
+
+ PHASE 4: Maintenance & Re-Verification (10/10 COMPLETE)
+ ═══════════════════════════════════════════════
+
+  #31 AutoResearch README corrected       DONE  Replaced upstream LLM README with thesis-specific docs.
+  #32 AutoResearch dotenv dependency       DONE  Added python-dotenv to pyproject + uv.lock.
+  #33 Subsystem Python environment wiring  DONE  run_all.py now prefers each subsystem venv.
+  #34 Iteration 6 feedback generated       DONE  New feedback/latest.json + iteration_006.json.
+  #35 Advisor intro revisions              DONE  Problem definition, assumptions, definitions, thesis structure.
+  #36 Advisor literature revisions         DONE  Added background theory for CVXPY, LightGBM, swarm, AutoResearch, MiroFish.
+  #37 Methodology stage expansion          DONE  3.1 split into detailed AutoResearch, MiroFish, pipeline, reporting, feedback stages.
+  #38 Formatting checklist                 DONE  Added deliverables/Formatting_Checklist.md for template compliance.
+  #39 Advisor response matrix              DONE  README section 6.6 maps every advisor note to revised sections.
+  #40 Next research agenda                 DONE  README section 6.7 records iteration-6 experiments.
+
+ PHASE 5: Next Research Cycle (5/5 COMPLETE)
+ ════════════════════════════════
+
+  #41 Swarm low-lambda experiment          DONE  Sharpe=0.813, return=+9.6%, DD=-16.8%.
+  #42 Tight-constraint robustness          DONE  Sharpe=1.307, return=+16.9%, DD=-16.0%.
+  #43 IC-weighted top-3 ensemble           DONE  Sharpe=0.126, weak; high IC not enough.
+  #44 Advisor-format DOCX pass             DONE  Generated Thesis_Draft_Formatted.docx via export_thesis_docx.py.
+  #45 Final defense narrative              DONE  Added deliverables/Defense_Storyline.md (10-slide outline).
 
  TEST STATUS
  ═══════════
 
   thesis_portfolio_opt/tests/  47/47 passing
   MiroFish/backend/tests/      36/36 passing
-  autoresearch/                 imports verified, batch mode functional
+  autoresearch/                 CLI imports verified via uv run python train.py --help
+  phase5_feedback_experiments   DONE  CSV + LaTeX table generated; script py_compile passes
+  thesis_docx_export            DONE  Thesis_Draft_Formatted.docx generated with page numbers/justified style

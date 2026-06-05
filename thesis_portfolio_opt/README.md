@@ -6,7 +6,7 @@ Industrial Engineering thesis project — macroeconomic factor-based dynamic por
 
 ```bash
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # macOS/Linux
 
 # Install dependencies
@@ -60,7 +60,7 @@ thesis_portfolio_opt/
 
 ### Option A: Full pipeline (recommended)
 ```bash
-make pipeline    # or: python run_pipeline.py --step all
+make pipeline    # or: python3 run_pipeline.py --step all
 ```
 
 ### Option B: Step by step

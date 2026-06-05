@@ -1,0 +1,15 @@
+\begin{table}
+\caption{Phase 5 Feedback-Driven Experiments (OOS 2022--2024)}
+\label{tab:phase5_feedback}
+\begin{tabular}{lrrrrrrrrrrrl}
+\toprule
+ & sharpe & sortino & ann_return & ann_vol & max_dd & calmar & total_return & risk_aversion & max_weight & tc_bps & shrinkage & notes \\
+strategy &  &  &  &  &  &  &  &  &  &  &  &  \\
+\midrule
+baseline_ml_only_current & 1.410 & 2.126 & 0.207 & 0.147 & -0.178 & 1.162 & 0.764 & 5.000 & 0.600 & 3.000 & 0.000 & Current AutoResearch best config, no swarm overlay. \\
+phase5_swarm_low_lambda & 0.813 & 1.256 & 0.096 & 0.118 & -0.168 & 0.573 & 0.294 & 2.000 & 0.500 & 3.000 & 0.000 & MiroFish risk overlay with lower risk aversion to recover return. \\
+phase5_tight_constraints & 1.307 & 2.095 & 0.169 & 0.129 & -0.160 & 1.054 & 0.590 & 5.000 & 0.300 & 3.000 & 0.200 & Tighter max-weight and shrinkage robustness test. \\
+phase5_ic_weighted_top3 & 0.126 & 0.192 & 0.015 & 0.121 & -0.213 & 0.072 & 0.023 & NaN & NaN & NaN & NaN & E4_lasso_momvol_only (IC=0.153, w=0.53), E10_ridge_macro_shrink70 (IC=0.098, w=0.34), E8_lgbm_macro (IC=0.038, w=0.13) \\
+\bottomrule
+\end{tabular}
+\end{table}
